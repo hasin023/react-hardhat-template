@@ -154,6 +154,25 @@ const DApp = () => {
         throw new Error("Transaction failed")
       }
 
+      // Store transaction hash in database
+      try {
+        const response = await fetch("http://localhost:3001/api/txhashes", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            transactionHash: tx.hash,
+          }),
+        })
+
+        if (!response.ok) {
+          console.error("Failed to store transaction hash in database")
+        }
+      } catch (dbError) {
+        console.error("Error storing transaction hash:", dbError)
+      }
+
       toast.success(
         <div className='flex flex-col'>
           <span>Transaction Successful!</span>
