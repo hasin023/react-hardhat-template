@@ -65,10 +65,6 @@ const DApp = () => {
         signer
       )
       setContract(contract)
-
-      // Get minimum transfer amount
-      const minAmount = await contract.getMinTransferAmount()
-      setMinTransferAmount(minAmount)
     } catch (error) {
       console.error("Failed to initialize ethers:", error)
       toast.error("Failed to initialize wallet connection")

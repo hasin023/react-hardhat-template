@@ -26,11 +26,7 @@ export function TransactionTable({ provider }) {
 
       // Static list of transaction hashes
       const transactionHashes = [
-        "0x32f3a888ec8832be81478af21beda3167ef0d25e0cba7d1b6b5aa3ed5703999c",
-        "0xd1d9c46f34c27101d421c57cd08faff45355ce28ce365ae2b842137e78267eac",
-        "0x209538133748cfaf29b17147768475e03ac4bd878d457c3ece4bf2c6979c1f62",
-        "0x79ace895c922773d967816adf11a4efdd4c1c787192b721c2d6650b5abb9462d",
-        "0xc9c18950fe6feeed907b78966bcea58f233904a9e9dff7e854209ce0e9a63a1d",
+        "0x0b0534322105d8d360d1eafd94d98654fd048295c280735a9092f92e7b51f310",
       ]
 
       const transactions = await Promise.all(
