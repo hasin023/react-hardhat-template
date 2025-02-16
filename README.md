@@ -29,6 +29,8 @@ Hardhat provides a local Ethereum network for development and testing. Start the
 
 ```bash
 npx hardhat node
+# or
+npm run network  # alias for npx hardhat node
 ```
 
 This will create multiple test accounts with pre-funded Ether.

@@ -1,19 +1,27 @@
 {
   "name": "react-hardhat",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "network": "npx hardhat node"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Solidity contract for React frontend using Hardhat",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "hardhat": "^2.22.18"
   },
-  "dependencies": {
-    "lucide-react": "^0.475.0"
-  }
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hasin023/react-hardhat-template.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hasin023/react-hardhat-template/issues"
+  },
+  "homepage": "https://github.com/hasin023/react-hardhat-template#readme"
 }
