@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a starter template for building a decentralized application (dApp) using React for the frontend and Hardhat for smart contract development and deployment. It includes a simple smart contract to trade ETH tokens between accounts and a basic React interface to interact with it.
+This is a starter template for building a decentralized application (dApp) using React for the frontend and Hardhat for smart contract development and deployment. It includes a simple smart contract to trade ETH tokens between accounts and a basic React interface to interact with it. Inspired from the official [Hardhat Boilerplate](https://github.com/NomicFoundation/hardhat-boilerplate) from the [Hardhat Tutorial](https://hardhat.org/tutorial). But that template was outdated, with the last commit being almost 2 years ago.
 
 ## Prerequisites
 
@@ -123,3 +123,6 @@ After restarting the Hardhat node, you may need to reset the DB hash data. As th
 - **Solidity** – Programming language for writing smart contracts.
 - **Ethers.js** – Library for interacting with the Ethereum blockchain.
 - **MetaMask** – Wallet and browser extension for managing Ethereum accounts.
+
+### Inspiration
+The official [Hardhat Boilerplate](https://github.com/NomicFoundation/hardhat-boilerplate) from the [Hardhat Tutorial](https://hardhat.org/tutorial) by [Nomic Foundation](https://github.com/NomicFoundation).
