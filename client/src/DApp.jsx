@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react"
 import { ethers } from "ethers"
-
 import toast from "react-hot-toast"
 
 import EthTransferArtifact from "./contracts/EthTransfer.json"
@@ -26,6 +25,7 @@ const DApp = () => {
   const [balance, setBalance] = useState()
   const [provider, setProvider] = useState()
   const [contract, setContract] = useState()
+  const [minTransferAmount, setMinTransferAmount] = useState("0.001")
 
   const connectWallet = useCallback(async () => {
     try {
@@ -57,7 +57,7 @@ const DApp = () => {
   }, [])
 
   const checkNetwork = useCallback(async () => {
-    if (window.ethereum.networkVersion !== HARDHAT_NETWORK_ID) {
+    if (window.ethereum.net_version !== HARDHAT_NETWORK_ID) {
       try {
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",
@@ -89,6 +89,10 @@ const DApp = () => {
         signer
       )
       setContract(contract)
+
+      // Get minimum transfer amount
+      const minAmount = await contract.getMinTransferAmount()
+      setMinTransferAmount(minAmount)
     } catch (error) {
       console.error("Failed to initialize ethers:", error)
       toast.error("Failed to initialize wallet connection")
@@ -105,28 +109,31 @@ const DApp = () => {
     }
   }, [provider, selectedAddress])
 
-  const transferEth = async (to, amount) => {
+  const transferEth = async (to, amountInEth) => {
     if (!contract) return
 
-    // Show initial preparation toast
     const preparingToastId = toast.loading(
       <div className='flex flex-col'>
         <span>Preparing Transaction</span>
         <span className='text-xs mt-1'>Please confirm in your wallet...</span>
       </div>,
       {
-        duration: Infinity, // Keep the toast until we dismiss it
+        duration: Infinity,
       }
     )
 
     try {
-      // This will trigger the MetaMask popup
-      const tx = await contract.transfer(to, { value: amount })
+      const amount = ethers.parseEther(amountInEth)
 
-      // Dismiss the preparing toast
+      // Send the transaction
+      const tx = await contract.transfer(to, {
+        value: amount,
+      })
+
       toast.dismiss(preparingToastId)
 
-      // Show the transaction sent toast
+      console.log("Transaction sent:", tx.hash)
+
       const sendingToastId = toast.loading(
         <div className='flex flex-col'>
           <span>Transaction Sent</span>
@@ -138,15 +145,12 @@ const DApp = () => {
       )
 
       const receipt = await tx.wait()
-
-      // Dismiss the sending toast
       toast.dismiss(sendingToastId)
 
       if (receipt.status === 0) {
         throw new Error("Transaction failed")
       }
 
-      // Show success toast
       toast.success(
         <div className='flex flex-col'>
           <span>Transaction Successful!</span>
@@ -163,15 +167,18 @@ const DApp = () => {
 
       await updateBalance()
     } catch (error) {
-      // Dismiss any pending toasts
       toast.dismiss(preparingToastId)
+      console.error("Detailed error:", {
+        message: error.message,
+        code: error.code,
+        data: error.data,
+      })
 
       if (error.code === ERROR_CODE_TX_REJECTED_BY_USER) {
         toast.error("Transaction rejected by user", {
           duration: 5000,
         })
       } else {
-        console.error("Transfer failed:", error)
         toast.error(
           <div className='flex flex-col'>
             <span>Transaction Failed</span>
@@ -258,7 +265,11 @@ const DApp = () => {
             <div className='divider'></div>
 
             <div className='mt-8'>
-              <Transfer transferTokens={transferEth} tokenSymbol='ETH' />
+              <Transfer
+                transferTokens={transferEth}
+                tokenSymbol='ETH'
+                minAmount={minTransferAmount}
+              />
             </div>
           </div>
         </div>

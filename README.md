@@ -19,6 +19,7 @@ npx hardhat node
 In a separate terminal, we need to compile and deploy the contract:
 
 ```bash
+npx hardhat clean
 npx hardhat compile
 npx hardhat run scripts/deploy.js --network localhost
 ```
