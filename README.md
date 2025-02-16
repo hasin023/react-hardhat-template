@@ -49,7 +49,7 @@ This will deploy the contract on the local Hardhat network and output the contra
 
 ### 4. Setup environment variables
 
-Create a `.env` file in both the `client` and `server` directory according to the `.env.example` files.
+Create a `.env` file in the `server` directory according to `.env.example`. Make sure you have MongoDB installed and running on your machine. [Setup MongoDB](https://www.mongodb.com/products/self-managed/community-edition)
 
 ### 5. Start the Backend
 
@@ -75,7 +75,7 @@ npm run dev
 
 The frontend should now be running at [http://localhost:5173](http://localhost:5173). Open this link in your browser.
 
-### 5. Connect MetaMask
+### 7. Connect MetaMask
 
 To interact with the deployed smart contract, configure MetaMask:
 
@@ -99,13 +99,27 @@ If you encounter a **nonce error** when trying to interact with the contract, re
 
 This issue occurs when the transaction count gets out of sync after restarting the Hardhat node.
 
+### Reset DB Hash data
+
+After restarting the Hardhat node, you may need to reset the DB hash data. As the previous hash data from the local chain will be invalid. You can simply delete the `txhashes` collection from the DB.
+
 ## Technologies Used
 
-- **Vite**: Development server for fast builds.
-- **React**: Frontend framework for building the UI.
-- **DaisyUI**: Tailwind CSS components for styling.
-- **React Router**: Library for routing in React applications.
-- **Hardhat**: Ethereum development environment for compiling, deploying, and testing smart contracts.
-- **Solidity**: Programming language for writing smart contracts.
-- **Ethers.js**: Library for interacting with the Ethereum blockchain.
-- **MetaMask**: Wallet and browser extension for managing Ethereum accounts.
+### Frontend
+
+- **React** – Frontend framework for building the UI.
+- **React Router** – Library for handling routing in React applications.
+- **DaisyUI** – Tailwind CSS components for styling.
+
+### Backend
+
+- **Express** – Backend framework for building the API.
+- **MongoDB** – NoSQL database for storing transaction data.
+- **Mongoose** – ODM library for MongoDB.
+
+### Blockchain & Smart Contracts
+
+- **Hardhat** – Ethereum development environment for smart contracts.
+- **Solidity** – Programming language for writing smart contracts.
+- **Ethers.js** – Library for interacting with the Ethereum blockchain.
+- **MetaMask** – Wallet and browser extension for managing Ethereum accounts.
