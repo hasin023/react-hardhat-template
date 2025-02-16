@@ -33,3 +33,7 @@ npm run dev
 ```
 
 The frontend should now be running at [localhost:5173](http://localhost:5173) and you should be able to interact with the contract. You need to have MetaMask installed and connected to the Hardhat node to interact with the contract.
+
+## Nonce Error
+
+If you get a nonce error when trying to interact with the contract, you can reset the account in MetaMask by going to Settings -> Advanced -> Clear activity and nonce data. This will reset the nonce and allow you to interact with the contract again. This usually happens when you stop and restart the Hardhat node.
