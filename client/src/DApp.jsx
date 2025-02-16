@@ -9,7 +9,7 @@ import { NoWalletDetected } from "./components/NoWalletDetected"
 import { ConnectWallet } from "./components/ConnectWallet"
 import { DisconnectWallet } from "./components/DisconnectWallet"
 import { Loading } from "./components/Loading"
-import { Transfer } from "./components/Transfer"
+import Transfer from "./components/Transfer"
 import { TransactionTable } from "./components/TransactionTable"
 
 const HARDHAT_NETWORK_ID = "31337"
@@ -274,40 +274,31 @@ const DApp = () => {
         <div className='card'>
           <div className='card-body'>
             <div className='flex justify-between items-center mb-6'>
-              <h1 className='card-title text-3xl font-bold'>
-                ETH Transfer Dapp
-              </h1>
+              <h1 className='text-2xl font-semibold'>ETH Transfer Dapp</h1>
               <DisconnectWallet disconnectWallet={disconnectWallet} />
             </div>
-            <div className='stats shadow mb-4'>
-              <div className='stat'>
-                <div className='stat-title'>Your Address</div>
-                <div className='stat-value text-gray-800 text-sm sm:text-base md:text-lg truncate'>
-                  {selectedAddress}
-                </div>
-              </div>
-              <div className='stat'>
-                <div className='stat-title'>Your Balance</div>
-                <div className='stat-value text-gray-800 text-sm sm:text-base md:text-lg'>
-                  {balance
-                    ? `${ethers.formatEther(balance)} ETH`
-                    : "Loading..."}
-                </div>
-              </div>
+
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
+              <InfoCard label='Wallet Address' value={selectedAddress} />
+              <InfoCard
+                label='Balance'
+                value={
+                  balance ? `${ethers.formatEther(balance)} ETH` : "Loading..."
+                }
+              />
             </div>
 
-            <div className='mt-4'>
+            <div className='mb-4'>
               <Transfer
                 transferTokens={transferEth}
                 tokenSymbol='ETH'
                 minAmount={minTransferAmount}
               />
             </div>
-
-            <div className='divider'></div>
-
-            <div className='mt-8'>
-              <h2 className='text-2xl font-bold mb-4'>Recent Transactions</h2>
+            <div className='mt-4'>
+              <h2 className='text-xl font-semibold mb-4'>
+                Recent Transactions
+              </h2>
               {provider && <TransactionTable provider={provider} />}
             </div>
           </div>
@@ -318,3 +309,10 @@ const DApp = () => {
 }
 
 export default DApp
+
+const InfoCard = ({ label, value }) => (
+  <div className='bg-gray-50 rounded-lg p-4'>
+    <div className='text-sm text-gray-500 mb-1 font-semibold'>{label}</div>
+    <div className='font-mono text-sm break-all'>{value}</div>
+  </div>
+)

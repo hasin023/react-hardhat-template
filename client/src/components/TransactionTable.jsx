@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react"
 import { ethers } from "ethers"
 import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react"
 
+import { NavLink } from "react-router"
+
 const TRANSACTIONS_PER_PAGE = 10
 
 const truncateAddress = (address) => {
@@ -27,6 +29,7 @@ export function TransactionTable({ provider }) {
         "0x32f3a888ec8832be81478af21beda3167ef0d25e0cba7d1b6b5aa3ed5703999c",
         "0xd1d9c46f34c27101d421c57cd08faff45355ce28ce365ae2b842137e78267eac",
         "0x209538133748cfaf29b17147768475e03ac4bd878d457c3ece4bf2c6979c1f62",
+        "0x79ace895c922773d967816adf11a4efdd4c1c787192b721c2d6650b5abb9462d",
       ]
 
       const transactions = await Promise.all(
@@ -41,7 +44,6 @@ export function TransactionTable({ provider }) {
               from: tx.from,
               to: tx.to || "Contract Creation",
               value: ethers.formatEther(tx.value || 0),
-              gasUsed: tx.maxFeePerGas,
             }
           } catch (error) {
             console.error(`Error fetching transaction ${hash}:`, error)
@@ -94,7 +96,7 @@ export function TransactionTable({ provider }) {
 
   return (
     <div className='space-y-4'>
-      <div className='bg-white rounded-lg shadow-md overflow-hidden'>
+      <div className='bg-white rounded-lg border border-gray-200 overflow-hidden'>
         <div className='overflow-x-auto'>
           <table className='min-w-full divide-y divide-gray-200'>
             <thead className='bg-gray-50'>
@@ -103,7 +105,7 @@ export function TransactionTable({ provider }) {
                   Tx Hash
                 </th>
                 <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                  Block
+                  Block No
                 </th>
                 <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
                   From
@@ -113,9 +115,6 @@ export function TransactionTable({ provider }) {
                 </th>
                 <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
                   Value (ETH)
-                </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                  Gas Used (WEI)
                 </th>
               </tr>
             </thead>
@@ -148,14 +147,13 @@ export function TransactionTable({ provider }) {
                         <span className='text-blue-600'>
                           {truncateAddress(tx.hash)}
                         </span>
-                        <a
-                          href={`https://localhost:8545/tx/${tx.hash}`}
-                          target='_blank'
-                          rel='noopener noreferrer'
+                        <NavLink
+                          to={`/tx/${tx.hash}`}
                           className='text-gray-400 hover:text-gray-600'
+                          end
                         >
                           <ExternalLink size={14} />
-                        </a>
+                        </NavLink>
                       </div>
                     </td>
                     <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
@@ -169,9 +167,6 @@ export function TransactionTable({ provider }) {
                     </td>
                     <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
                       {parseFloat(tx.value).toFixed(6)}
-                    </td>
-                    <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-                      {parseFloat(tx.gasUsed).toFixed(6)}
                     </td>
                   </tr>
                 ))

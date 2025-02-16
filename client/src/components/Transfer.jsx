@@ -1,50 +1,61 @@
-export function Transfer({ transferTokens, tokenSymbol }) {
+const Transfer = ({ transferTokens, tokenSymbol, minAmount }) => {
   return (
-    <div className='card w-96 bg-base-100 shadow'>
-      <div className='card-body'>
-        <h2 className='card-title'>Transfer</h2>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault()
-            const formData = new FormData(event.target)
-            const to = formData.get("to")
-            const amount = formData.get("amount")
-            if (to && amount) {
-              transferTokens(to, amount)
-            }
-          }}
-        >
-          <div className='form-control w-full max-w-xs'>
-            <label className='label'>
-              <span className='label-text'>Amount of {tokenSymbol}</span>
-            </label>
-            <input
-              type='number'
-              step='1'
-              name='amount'
-              placeholder='1'
-              required
-              className='input input-bordered w-full max-w-xs'
-            />
-          </div>
-          <div className='form-control w-full max-w-xs mt-4'>
-            <label className='label'>
-              <span className='label-text'>Recipient address</span>
-            </label>
-            <input
-              type='text'
-              name='to'
-              required
-              className='input input-bordered w-full max-w-xs'
-            />
-          </div>
-          <div className='card-actions justify-end mt-6'>
-            <button className='btn btn-accent' type='submit'>
-              Transfer
-            </button>
-          </div>
-        </form>
-      </div>
+    <div className='bg-gray-50 rounded-lg p-6'>
+      <h2 className='text-lg font-semibold mb-4'>Transfer {tokenSymbol}</h2>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          const formData = new FormData(event.target)
+          const to = formData.get("to")
+          const amount = formData.get("amount")
+          if (to && amount) {
+            transferTokens(to, amount)
+          }
+        }}
+        className='space-y-4'
+      >
+        <div>
+          <label
+            htmlFor='amount'
+            className='block text-sm font-medium text-gray-700 mb-1'
+          >
+            Amount of {tokenSymbol}
+          </label>
+          <input
+            type='number'
+            step='0.000001'
+            min={minAmount}
+            name='amount'
+            id='amount'
+            placeholder={minAmount}
+            required
+            className='input input-bordered w-full'
+          />
+        </div>
+        <div>
+          <label
+            htmlFor='to'
+            className='block text-sm font-medium text-gray-700 mb-1'
+          >
+            Recipient address
+          </label>
+          <input
+            type='text'
+            name='to'
+            id='to'
+            required
+            className='input input-bordered w-full'
+            placeholder='0x...'
+          />
+        </div>
+        <div className='pt-2'>
+          <button className='btn btn-success w-full' type='submit'>
+            Transfer
+          </button>
+        </div>
+      </form>
     </div>
   )
 }
+
+export default Transfer
