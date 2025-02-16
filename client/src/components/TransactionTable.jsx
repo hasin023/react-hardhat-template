@@ -16,60 +16,73 @@ export function TransactionTable({ provider }) {
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalTransactions, setTotalTransactions] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
   const [error, setError] = useState(null)
 
-  const fetchTransactions = useCallback(async () => {
-    if (!provider) return
-    try {
-      setLoading(true)
-      setError(null)
+  const fetchTransactions = useCallback(
+    async (page = currentPage) => {
+      if (!provider) return
+      try {
+        setLoading(true)
+        setError(null)
 
-      // Static list of transaction hashes
-      const transactionHashes = [
-        "0x0b0534322105d8d360d1eafd94d98654fd048295c280735a9092f92e7b51f310",
-      ]
+        // Fetch transaction hashes from API with pagination
+        const response = await fetch(
+          `http://localhost:3001/api/txhashes?page=${page}&limit=${TRANSACTIONS_PER_PAGE}`
+        )
 
-      const transactions = await Promise.all(
-        transactionHashes.map(async (hash) => {
-          try {
-            const tx = await provider.getTransaction(hash)
-            if (!tx) return null
+        if (!response.ok) {
+          throw new Error("Failed to fetch transaction hashes from API")
+        }
 
-            return {
-              hash: tx.hash,
-              blockNumber: tx.blockNumber || "Pending",
-              from: tx.from,
-              to: tx.to || "Contract Creation",
-              value: ethers.formatEther(tx.value || 0),
+        const { data: txHashesData, pagination } = await response.json()
+
+        // Update pagination state
+        setTotalPages(pagination.totalPages)
+        setTotalTransactions(pagination.totalItems)
+
+        // Fetch transaction details from blockchain
+        const transactions = await Promise.all(
+          txHashesData.map(async ({ transactionHash, timestamp }) => {
+            try {
+              const tx = await provider.getTransaction(transactionHash)
+              if (!tx) return null
+
+              return {
+                hash: tx.hash,
+                blockNumber: tx.blockNumber || "Pending",
+                from: tx.from,
+                to: tx.to || "Contract Creation",
+                value: ethers.formatEther(tx.value || 0),
+                timestamp: new Date(timestamp),
+              }
+            } catch (error) {
+              console.error(
+                `Error fetching transaction ${transactionHash}:`,
+                error
+              )
+              return null
             }
-          } catch (error) {
-            console.error(`Error fetching transaction ${hash}:`, error)
-            return null
-          }
-        })
-      )
+          })
+        )
 
-      const validTransactions = transactions.filter((tx) => tx !== null)
-      setTotalTransactions(validTransactions.length)
-      setTransactions(validTransactions)
-      setLoading(false)
-    } catch (error) {
-      console.error("Error fetching transactions:", error)
-      setError("Failed to fetch transactions. Please try again later.")
-      setLoading(false)
-    }
-  }, [provider])
+        const validTransactions = transactions.filter((tx) => tx !== null)
+        setTransactions(validTransactions)
+        setLoading(false)
+      } catch (error) {
+        console.error("Error fetching transactions:", error)
+        setError("Failed to fetch transactions. Please try again later.")
+        setLoading(false)
+      }
+    },
+    [provider, currentPage]
+  )
 
   useEffect(() => {
-    fetchTransactions()
-    const interval = setInterval(fetchTransactions, 60000)
+    fetchTransactions(currentPage)
+    const interval = setInterval(() => fetchTransactions(currentPage), 60000)
     return () => clearInterval(interval)
-  }, [fetchTransactions])
-
-  const startIndex = (currentPage - 1) * TRANSACTIONS_PER_PAGE
-  const endIndex = startIndex + TRANSACTIONS_PER_PAGE
-  const currentTransactions = transactions.slice(startIndex, endIndex)
-  const totalPages = Math.ceil(totalTransactions / TRANSACTIONS_PER_PAGE)
+  }, [fetchTransactions, currentPage])
 
   const nextPage = () => {
     if (currentPage < totalPages) {
@@ -90,6 +103,12 @@ export function TransactionTable({ provider }) {
       </div>
     )
   }
+
+  const startIndex = (currentPage - 1) * TRANSACTIONS_PER_PAGE
+  const endIndex = Math.min(
+    startIndex + TRANSACTIONS_PER_PAGE,
+    totalTransactions
+  )
 
   return (
     <div className='space-y-4'>
@@ -113,6 +132,9 @@ export function TransactionTable({ provider }) {
                 <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
                   Value (ETH)
                 </th>
+                <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                  Timestamp
+                </th>
               </tr>
             </thead>
             <tbody className='bg-white divide-y divide-gray-200'>
@@ -124,7 +146,7 @@ export function TransactionTable({ provider }) {
                     </div>
                   </td>
                 </tr>
-              ) : currentTransactions.length === 0 ? (
+              ) : transactions.length === 0 ? (
                 <tr>
                   <td
                     colSpan={8}
@@ -134,7 +156,7 @@ export function TransactionTable({ provider }) {
                   </td>
                 </tr>
               ) : (
-                currentTransactions.map((tx) => (
+                transactions.map((tx) => (
                   <tr
                     key={tx.hash}
                     className='hover:bg-gray-50 transition-colors'
@@ -164,6 +186,9 @@ export function TransactionTable({ provider }) {
                     </td>
                     <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
                       {parseFloat(tx.value).toFixed(6)}
+                    </td>
+                    <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
+                      {tx.timestamp.toLocaleString()}
                     </td>
                   </tr>
                 ))
@@ -196,11 +221,8 @@ export function TransactionTable({ provider }) {
             <div>
               <p className='text-sm text-gray-700'>
                 Showing <span className='font-medium'>{startIndex + 1}</span> to{" "}
-                <span className='font-medium'>
-                  {Math.min(endIndex, totalTransactions)}
-                </span>{" "}
-                of <span className='font-medium'>{totalTransactions}</span>{" "}
-                results
+                <span className='font-medium'>{endIndex}</span> of{" "}
+                <span className='font-medium'>{totalTransactions}</span> results
               </p>
             </div>
             <div>
