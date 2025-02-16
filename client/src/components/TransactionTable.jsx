@@ -30,6 +30,7 @@ export function TransactionTable({ provider }) {
         "0xd1d9c46f34c27101d421c57cd08faff45355ce28ce365ae2b842137e78267eac",
         "0x209538133748cfaf29b17147768475e03ac4bd878d457c3ece4bf2c6979c1f62",
         "0x79ace895c922773d967816adf11a4efdd4c1c787192b721c2d6650b5abb9462d",
+        "0xc9c18950fe6feeed907b78966bcea58f233904a9e9dff7e854209ce0e9a63a1d",
       ]
 
       const transactions = await Promise.all(
