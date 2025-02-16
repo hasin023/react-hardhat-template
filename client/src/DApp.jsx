@@ -10,7 +10,7 @@ import { ConnectWallet } from "./components/ConnectWallet"
 import { DisconnectWallet } from "./components/DisconnectWallet"
 import { Loading } from "./components/Loading"
 import { Transfer } from "./components/Transfer"
-// import { TransactionTable } from "./components/TransactionTable"
+import { TransactionTable } from "./components/TransactionTable"
 
 const HARDHAT_NETWORK_ID = "31337"
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001
@@ -270,7 +270,7 @@ const DApp = () => {
 
   return (
     <div className='min-h-screen py-8'>
-      <div className='max-w-4xl mx-auto px-4'>
+      <div className='max-w-7xl mx-auto px-4'>
         <div className='card'>
           <div className='card-body'>
             <div className='flex justify-between items-center mb-6'>
@@ -304,12 +304,12 @@ const DApp = () => {
               />
             </div>
 
-            {/* <div className='divider'></div>
+            <div className='divider'></div>
 
             <div className='mt-8'>
               <h2 className='text-2xl font-bold mb-4'>Recent Transactions</h2>
               {provider && <TransactionTable provider={provider} />}
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
