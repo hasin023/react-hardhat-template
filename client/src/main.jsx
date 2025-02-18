@@ -1,10 +1,10 @@
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import "./index.css"
-import DApp from "./DApp"
 import { Toaster } from "react-hot-toast"
 
 import { BrowserRouter, Routes, Route } from "react-router"
+import DApp from "./pages/DApp"
 import TxDetails from "./components/TxDetails"
 import NotFound from "./components/NotFound"
 
